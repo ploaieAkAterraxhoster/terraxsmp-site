@@ -55,6 +55,13 @@ h2{font-size:2rem;margin-bottom:14px}
 .price small{font-family:Figtree,sans-serif;font-size:.85rem;color:var(--muted);font-weight:400}
 .crate .btn{margin-top:auto;text-align:center}
 .note{margin-top:22px;color:var(--muted);font-size:.92rem}
+.ranks{border-top:1px solid var(--line)}
+.ranks>.wrap>p{color:var(--muted);max-width:62ch;margin:0 0 28px}
+.perks{list-style:none;margin:0;padding:0;font-size:.95rem}
+.perks li{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid var(--line)}
+.perks li span:first-child{color:var(--muted)}
+.perks li span:last-child{text-align:right;font-weight:500}
+.perks li.cmd{display:block;border-bottom:0;padding:3px 0;font-family:"Pixelify Sans",monospace;color:var(--c)}
 
 footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:.9rem}
 footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 28px}
@@ -128,6 +135,15 @@ footer p{margin:0}
   </div>
 </section>
 
+<section class="ranks" id="ranks">
+  <div class="wrap">
+    <h2>Ranks</h2>
+    <p>Ranks give you more homes, bigger daily rewards, lower auction tax and handy commands. Higher ranks include everything from the ones below them.</p>
+    <div class="grid" id="rank-grid"></div>
+    <p class="note">Prices are in euros. Buying happens on our Discord, so have your Minecraft username ready.</p>
+  </div>
+</section>
+
 <footer>
   <div class="wrap">
     <div>
@@ -174,6 +190,48 @@ CRATES.forEach(c => {
   el.querySelector("a").href = BUY_LINK;
   el.querySelector("a").setAttribute("aria-label", "Buy a " + c.name + " key");
   grid.appendChild(el);
+});
+
+/* ---- Ranks: EDIT THE PRICES, they are placeholders ---- */
+const RANKS = [
+  { name: "+ Rank",   price: 5.00,  color: "#55ff55", homes: 7,  daily: "$2,500 + 5 shards",   auctions: "15 (4% tax)", orders: 8,  tp: "2s",
+    cmds: ["/craft"] },
+  { name: "++ Rank",  price: 10.00, color: "#55ffff", homes: 15, daily: "$7,500 + 15 shards",  auctions: "25 (3% tax)", orders: 12, tp: "1s",
+    cmds: ["/craft", "/enderchest"] },
+  { name: "+++ Rank", price: 18.00, color: "#ff55ff", homes: 30, daily: "$20,000 + 40 shards", auctions: "40 (2% tax)", orders: 20, tp: "0s",
+    cmds: ["/craft", "/enderchest", "/feed"] }
+];
+
+const rankGrid = document.getElementById("rank-grid");
+RANKS.forEach(r => {
+  const el = document.createElement("article");
+  el.className = "crate";
+  el.style.setProperty("--c", r.color);
+  el.innerHTML =
+    '<div class="box" aria-hidden="true"></div>' +
+    '<h3></h3>' +
+    '<div class="price">€' + r.price.toFixed(2) + ' <small>one rank</small></div>' +
+    '<ul class="perks"></ul>' +
+    '<a class="btn" target="_blank" rel="noopener">Buy this rank</a>';
+  el.querySelector("h3").textContent = r.name;
+  const list = el.querySelector(".perks");
+  [["Homes", r.homes], ["Daily reward", r.daily], ["Auction listings", r.auctions],
+   ["Order slots", r.orders], ["Home teleport delay", r.tp]].forEach(p => {
+    const li = document.createElement("li");
+    li.innerHTML = "<span></span><span></span>";
+    li.children[0].textContent = p[0];
+    li.children[1].textContent = p[1];
+    list.appendChild(li);
+  });
+  r.cmds.forEach(c => {
+    const li = document.createElement("li");
+    li.className = "cmd";
+    li.textContent = c;
+    list.appendChild(li);
+  });
+  el.querySelector("a").href = BUY_LINK;
+  el.querySelector("a").setAttribute("aria-label", "Buy the " + r.name);
+  rankGrid.appendChild(el);
 });
 
 const toast = document.getElementById("toast");
