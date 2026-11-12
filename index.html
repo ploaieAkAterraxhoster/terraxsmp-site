@@ -131,7 +131,7 @@ footer p{margin:0}
     <h2>Crate keys</h2>
     <p>Each key opens one crate. In game, left click a crate to open it, or right click to see what is inside before you buy.</p>
     <div class="grid" id="grid"></div>
-    <p class="note">Prices are in euros. After you order, your keys are added to your account on the server. Buying happens on our Discord, so have your Minecraft username ready.</p>
+    <p class="note">Prices are in euros. Place your order on the order page and a staff member will contact you on Discord to confirm and arrange payment. Your keys are added to your account on the server once payment is confirmed. Have your Minecraft username ready.</p>
   </div>
 </section>
 
@@ -140,7 +140,7 @@ footer p{margin:0}
     <h2>Ranks</h2>
     <p>Ranks give you more homes, bigger daily rewards, lower auction tax and handy commands. Higher ranks include everything from the ones below them.</p>
     <div class="grid" id="rank-grid"></div>
-    <p class="note">Prices are in euros. Buying happens on our Discord, so have your Minecraft username ready.</p>
+    <p class="note">Prices are in euros. Place your order on the order page and a staff member will contact you on Discord to confirm and arrange payment. Have your Minecraft username ready.</p>
   </div>
 </section>
 
@@ -162,7 +162,7 @@ footer p{margin:0}
 <script>
 /* ---- Edit these ---- */
 const SERVER_IP = "play.terraxsmp.online";         // your server address
-const BUY_LINK  = "https://discord.gg/yK6DUpNHT4";  // where players go to pay
+const BUY_LINK  = "order.html";  // order form page
 
 const CRATES = [
   { name: "Novice Crate",           price: 1.50,  color: "#d9dedb" },
@@ -185,7 +185,7 @@ CRATES.forEach(c => {
     '<div class="box" aria-hidden="true"></div>' +
     '<h3></h3>' +
     '<div class="price">€' + c.price.toFixed(2) + ' <small>per key</small></div>' +
-    '<a class="btn" target="_blank" rel="noopener">Buy a key</a>';
+    '<a class="btn">Buy a key</a>';
   el.querySelector("h3").textContent = c.name;
   el.querySelector("a").href = BUY_LINK;
   el.querySelector("a").setAttribute("aria-label", "Buy a " + c.name + " key");
@@ -212,7 +212,7 @@ RANKS.forEach(r => {
     '<h3></h3>' +
     '<div class="price">€' + r.price.toFixed(2) + ' <small>one rank</small></div>' +
     '<ul class="perks"></ul>' +
-    '<a class="btn" target="_blank" rel="noopener">Buy this rank</a>';
+    '<a class="btn">Buy this rank</a>';
   el.querySelector("h3").textContent = r.name;
   const list = el.querySelector(".perks");
   [["Homes", r.homes], ["Daily reward", r.daily], ["Auction listings", r.auctions],
