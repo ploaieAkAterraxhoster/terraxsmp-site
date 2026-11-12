@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Place an order – Terrax SMP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1512;--panel:#17211c;--line:#2a3a32;--text:#e8efe9;--muted:#9bb0a3;--accent:#7bd88f;--bad:#e5645a;color-scheme:dark}
+@media (prefers-color-scheme:light){:root{--bg:#eef3ee;--panel:#fff;--line:#cfdcd2;--text:#14201a;--muted:#51675a;--accent:#1f8a3b;--bad:#b3261e;color-scheme:light}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Figtree,system-ui,sans-serif;line-height:1.6}
+.wrap{max-width:720px;margin:0 auto;padding:40px 20px 64px}
+h1,h2{font-family:"Pixelify Sans",monospace;line-height:1.1;margin:0}
+h1{font-size:2.4rem;margin-bottom:8px}
+h2{font-size:1.4rem;margin:32px 0 12px}
+a{color:var(--accent)}
+.lead{color:var(--muted);margin:0 0 8px}
+label{display:block;font-weight:600;margin:16px 0 6px}
+input[type=text],input[type=number],select,textarea{width:100%;font:inherit;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:10px 12px}
+textarea{min-height:90px;resize:vertical}
+.hint{color:var(--muted);font-size:.9rem;margin:4px 0 0}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.item{display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--panel);border:1px solid var(--line);padding:10px 14px;margin-bottom:8px}
+.item b{font-weight:600}
+.item small{color:var(--muted);margin-left:8px}
+.item input{width:76px;text-align:center}
+.total{display:flex;justify-content:space-between;font-family:"Pixelify Sans",monospace;font-size:1.6rem;border-top:2px solid var(--line);padding-top:14px;margin-top:18px}
+button{font:inherit;font-weight:600;cursor:pointer;border:2px solid var(--accent);background:var(--accent);color:#0b1a10;padding:12px 22px;border-radius:4px;margin-top:22px}
+button:disabled{opacity:.6;cursor:wait}
+.hp{position:absolute;left:-9999px}
+#msg{margin-top:18px;padding:12px 14px;border-left:3px solid var(--accent);background:var(--panel);display:none}
+#msg.err{border-color:var(--bad)}
+.terms{color:var(--muted);font-size:.9rem;margin-top:26px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p><a href="index.html">&larr; Back to Terrax SMP</a></p>
+  <h1>Place an order</h1>
+  <p class="lead">Fill this in and our staff will contact you on Discord to confirm and arrange payment. You don't pay on this page.</p>
+
+  <form id="f" novalidate>
+    <label for="mc">Minecraft Java username</label>
+    <input type="text" id="mc" maxlength="16" autocomplete="off" required>
+
+    <label for="dc">Your Discord username</label>
+    <input type="text" id="dc" maxlength="40" autocomplete="off" required>
+    <p class="hint">Staff will message you or invite you to a ticket on our Discord. <a id="dlink" href="#" target="_blank" rel="noopener">Join the Discord</a> first so we can reach you.</p>
+
+    <h2>What do you want?</h2>
+    <div id="items"></div>
+    <div class="total"><span>Total</span><span id="total">€0.00</span></div>
+
+    <label for="pay">Preferred payment method</label>
+    <select id="pay"></select>
+
+    <label for="note">Notes (optional)</label>
+    <textarea id="note" maxlength="500"></textarea>
+
+    <input class="hp" type="text" id="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+    <button type="submit" id="send">Send order</button>
+    <div id="msg" role="status" aria-live="polite"></div>
+  </form>
+
+  <p class="terms">By ordering you agree that sales are final once items are delivered and that chargebacks lead to a permanent ban. Terrax SMP is not affiliated with Mojang or Microsoft.</p>
+</div>
+
+<script>
+/* ---- EDIT THESE ---- */
+const WEBHOOK_URL = "https://canary.discord.com/api/webhooks/1570414317373755405/uazd5L1Pa_pU2v5DpZqW5DRcMSL2B88-oMZzrw-jUC4DETQ4ulFIjzpTgnYypu7ZoaMv";
+const DISCORD_INVITE = "https://discord.gg/yK6DUpNHT4";
+const PAYMENT_METHODS = ["PayPal", "Revolut", "Bank transfer"]; // change to what you accept
+const ITEMS = [ // keep in sync with index.html
+  { name: "Novice Crate Key", price: 1.50 },
+  { name: "Overworld Crate Key", price: 3.00 },
+  { name: "Netherbound Crate Key", price: 5.00 },
+  { name: "Endgame Crate Key", price: 8.00 },
+  { name: "Mythic Crate Key", price: 12.00 },
+  { name: "Terrax Sovereign Crate Key", price: 20.00 },
+  { name: "+ Rank", price: 5.00, max: 1 },
+  { name: "++ Rank", price: 10.00, max: 1 },
+  { name: "+++ Rank", price: 18.00, max: 1 }
+];
+
+const $ = id => document.getElementById(id);
+const eur = n => "€" + n.toFixed(2);
+$("dlink").href = DISCORD_INVITE;
+PAYMENT_METHODS.forEach(m => { const o = document.createElement("option"); o.textContent = m; $("pay").appendChild(o); });
+
+const qtyEls = [];
+ITEMS.forEach((it, i) => {
+  const row = document.createElement("div"); row.className = "item";
+  const left = document.createElement("div");
+  const b = document.createElement("b"); b.textContent = it.name;
+  const s = document.createElement("small"); s.textContent = eur(it.price);
+  left.append(b, s);
+  const q = document.createElement("input");
+  q.type = "number"; q.min = 0; q.max = it.max || 20; q.value = 0;
+  q.setAttribute("aria-label", "Quantity of " + it.name);
+  q.addEventListener("input", update);
+  qtyEls.push(q);
+  row.append(left, q); $("items").appendChild(row);
+});
+
+function chosen() {
+  return ITEMS.map((it, i) => ({ it, n: Math.max(0, Math.min(it.max || 20, parseInt(qtyEls[i].value, 10) || 0)) })).filter(x => x.n > 0);
+}
+function update() { $("total").textContent = eur(chosen().reduce((t, x) => t + x.it.price * x.n, 0)); }
+
+function show(text, bad) { const m = $("msg"); m.textContent = text; m.className = bad ? "err" : ""; m.style.display = "block"; }
+
+$("f").addEventListener("submit", async e => {
+  e.preventDefault();
+  if ($("website").value) return; // bot
+  const mc = $("mc").value.trim(), dc = $("dc").value.trim(), list = chosen();
+  if (!/^[A-Za-z0-9_]{3,16}$/.test(mc)) return show("Enter a valid Minecraft username (3-16 letters, numbers or underscores).", true);
+  if (!dc) return show("Enter your Discord username so staff can reach you.", true);
+  if (!list.length) return show("Choose at least one item.", true);
+  if (WEBHOOK_URL.indexOf("discord.com/api/webhooks/") === -1) return show("Ordering isn't set up yet. Please open a ticket on our Discord instead.", true);
+
+  try { const last = +localStorage.getItem("lastOrder") || 0; if (Date.now() - last < 60000) return show("Please wait a minute before sending another order.", true); } catch (_) {}
+
+  const total = list.reduce((t, x) => t + x.it.price * x.n, 0);
+  const body = {
+    username: "Terrax Orders",
+    allowed_mentions: { parse: [] },
+    embeds: [{
+      title: "New order",
+      color: 8116367,
+      fields: [
+        { name: "Minecraft", value: mc.slice(0, 16), inline: true },
+        { name: "Discord", value: dc.slice(0, 40), inline: true },
+        { name: "Payment", value: $("pay").value.slice(0, 40), inline: true },
+        { name: "Items", value: list.map(x => x.n + " x " + x.it.name).join("\n").slice(0, 1000) },
+        { name: "Total", value: eur(total), inline: true },
+        { name: "Notes", value: ($("note").value.trim() || "None").slice(0, 500) }
+      ],
+      timestamp: new Date().toISOString()
+    }]
+  };
+
+  $("send").disabled = true;
+  try {
+    const r = await fetch(WEBHOOK_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    if (!r.ok) throw new Error("bad status");
+    try { localStorage.setItem("lastOrder", String(Date.now())); } catch (_) {}
+    $("f").reset(); update();
+    show("Order sent! A staff member will contact you on Discord (" + dc.slice(0, 40) + ") soon. Make sure you've joined our Discord.", false);
+  } catch (err) {
+    show("Couldn't send your order. Please open a ticket on our Discord instead.", true);
+  }
+  $("send").disabled = false;
+});
+</script>
+</body>
+</html>
