@@ -4,109 +4,180 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Terrax SMP</title>
+<meta name="description" content="Terrax SMP is a premium Minecraft Java survival server with a player economy, crates and ranks.">
+<link rel="icon" type="image/png" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0f1512; --panel:#17211c; --line:#2a3a32; --text:#e8efe9; --muted:#9bb0a3; --accent:#7bd88f;
+  --bg:#0d3350; --panel:#134566; --panel2:#0f3a58; --line:#245f86; --text:#f2fbff; --muted:#a9cde0;
+  --accent:#a6e22e; --accent-edge:#5f8f12; --ink:#10300f; --leaf:#4c9a2a; --link:#8fdcff; --bad:#ef6a5e;
+  --sky1:#1c6495; --sky2:#0d3350; --hero-muted:#d3ebf7;
   color-scheme:dark;
 }
 @media (prefers-color-scheme:light){
-  :root{--bg:#eef3ee; --panel:#ffffff; --line:#cfdcd2; --text:#14201a; --muted:#51675a; --accent:#1f8a3b; color-scheme:light}
+  :root{
+    --bg:#e8f4fa; --panel:#ffffff; --panel2:#f2f9fd; --line:#b9d8e8; --text:#0d2b40; --muted:#47697d;
+    --link:#0f5f99; --bad:#b3261e; --accent-edge:#6a9c14; --sky1:#bfe6f7; --sky2:#e8f4fa; --hero-muted:#2f566b;
+    color-scheme:light;
+  }
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Figtree,system-ui,sans-serif;line-height:1.6}
-.wrap{max-width:1000px;margin:0 auto;padding:0 20px}
-h1,h2,h3{font-family:"Pixelify Sans",monospace;margin:0;line-height:1.1}
-a{color:var(--accent)}
-:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+h1,h2,h3{font-family:"Pixelify Sans",monospace;margin:0;line-height:1.05;font-weight:700}
+a{color:var(--link)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 
-.hero{padding:88px 0 64px;border-bottom:1px solid var(--line)}
-.hero p.lead{color:var(--muted);margin:0 0 10px;font-size:1.05rem}
-.ip{display:flex;flex-wrap:wrap;align-items:center;gap:14px}
-.ip code{font-family:"Pixelify Sans",monospace;font-weight:700;font-size:clamp(1.8rem,7vw,4rem);word-break:break-all;line-height:1}
-button,.btn{font:inherit;font-weight:600;cursor:pointer;border:2px solid var(--accent);background:var(--accent);color:#0b1a10;padding:10px 18px;border-radius:4px;text-decoration:none;display:inline-block}
-button.ghost{background:transparent;color:var(--accent)}
-.hero h1{font-size:clamp(1.2rem,3vw,1.6rem);color:var(--muted);margin-bottom:18px;font-weight:500}
+button,.btn{font:inherit;font-weight:600;cursor:pointer;border:0;background:var(--accent);color:var(--ink);padding:11px 20px;border-radius:2px;text-decoration:none;display:inline-block;box-shadow:0 4px 0 var(--accent-edge);transition:transform .08s,box-shadow .08s}
+button:hover,.btn:hover{transform:translateY(1px);box-shadow:0 3px 0 var(--accent-edge)}
+button:active,.btn:active{transform:translateY(4px);box-shadow:0 0 0 var(--accent-edge)}
 
-section{padding:56px 0}
-h2{font-size:2rem;margin-bottom:14px}
-.about p{max-width:62ch;color:var(--muted);margin:0 0 12px}
+/* top bar */
+.nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:2px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;gap:20px;height:60px}
+.brand{display:flex;align-items:center;gap:10px;font-family:"Pixelify Sans",monospace;font-weight:700;font-size:1.3rem;color:var(--text);text-decoration:none}
+.brand img{width:36px;height:36px;display:block}
+.nav ul{display:flex;gap:2px;list-style:none;margin:0 0 0 auto;padding:0}
+.nav ul a{display:block;padding:8px 12px;color:var(--muted);text-decoration:none;font-weight:500}
+.nav ul a:hover{color:var(--text)}
+.nav .btn{padding:7px 16px}
+@media (max-width:760px){.nav ul{display:none}.nav .btn{margin-left:auto}}
+
+/* hero */
+.hero{position:relative;background:linear-gradient(var(--sky1),var(--sky2));padding:64px 0 124px;overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:32px;align-items:center}
+.hero h1{font-size:clamp(3.2rem,10vw,6rem);letter-spacing:-.01em;margin-bottom:16px}
+.hero .lead{color:var(--hero-muted);font-size:1.15rem;max-width:34ch;margin:0 0 28px}
+.ip-plate{display:inline-flex;flex-wrap:wrap;align-items:center;gap:14px;background:rgba(5,24,38,.6);border:3px solid rgba(0,0,0,.5);box-shadow:inset 0 0 0 2px rgba(255,255,255,.12);padding:12px 12px 12px 20px}
+.ip-plate code{font-family:"Pixelify Sans",monospace;font-weight:700;font-size:clamp(1.3rem,4.5vw,2rem);color:#f2fbff;word-break:break-all;line-height:1.1}
+.hero-logo{justify-self:center;width:min(100%,430px)}
+.hero-logo img{width:100%;height:auto;display:block;animation:bob 6s ease-in-out infinite;filter:drop-shadow(0 22px 24px rgba(3,20,32,.4))}
+@keyframes bob{50%{transform:translateY(-12px)}}
+.ground{position:absolute;left:0;right:0;bottom:0;height:60px;background:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNDAgNjAiIHdpZHRoPSIyNDAiIGhlaWdodD0iNjAiIHNoYXBlLXJlbmRlcmluZz0iY3Jpc3BFZGdlcyI+PHJlY3QgeD0iMCIgeT0iMjQiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iI2I0ZWUzYyIvPjxyZWN0IHg9IjAiIHk9IjM2IiB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIGZpbGw9IiM0YzlhMmEiLz48cmVjdCB4PSIwIiB5PSI0OCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjNGM5YTJhIi8+PHJlY3QgeD0iMTIiIHk9IjI0IiB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIGZpbGw9IiNiNGVlM2MiLz48cmVjdCB4PSIxMiIgeT0iMzYiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iIzRjOWEyYSIvPjxyZWN0IHg9IjEyIiB5PSI0OCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjM2Y4NTI0Ii8+PHJlY3QgeD0iMjQiIHk9IjEyIiB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIGZpbGw9IiNiNGVlM2MiLz48cmVjdCB4PSIyNCIgeT0iMjQiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iIzRjOWEyYSIvPjxyZWN0IHg9IjI0IiB5PSIzNiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjNGM5YTJhIi8+PHJlY3QgeD0iMjQiIHk9IjQ4IiB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIGZpbGw9IiMyOTVmMjAiLz48cmVjdCB4PSIzNiIgeT0iMTIiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iI2E2ZTIyZSIvPjxyZWN0IHg9IjM2IiB5PSIyNCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjNGM5YTJhIi8+PHJlY3QgeD0iMzYiIHk9IjM2IiB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIGZpbGw9IiM0YzlhMmEiLz48cmVjdCB4PSIzNiIgeT0iNDgiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iIzJmNmIyNCIvPjxyZWN0IHg9IjQ4IiB5PSIxMiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjYTZlMjJlIi8+PHJlY3QgeD0iNDgiIHk9IjI0IiB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIGZpbGw9IiM0YzlhMmEiLz48cmVjdCB4PSI0OCIgeT0iMzYiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iIzNmODUyNCIvPjxyZWN0IHg9IjQ4IiB5PSI0OCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjMjk1ZjIwIi8+PHJlY3QgeD0iNjAiIHk9IjI0IiB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIGZpbGw9IiNhNmUyMmUiLz48cmVjdCB4PSI2MCIgeT0iMzYiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iIzRjOWEyYSIvPjxyZWN0IHg9IjYwIiB5PSI0OCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjM2Y4NTI0Ii8+PHJlY3QgeD0iNzIiIHk9IjAiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iI2I0ZWUzYyIvPjxyZWN0IHg9IjcyIiB5PSIxMiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjNGM5YTJhIi8+PHJlY3QgeD0iNzIiIHk9IjI0IiB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIGZpbGw9IiMzZjg1MjQiLz48cmVjdCB4PSI3MiIgeT0iMzYiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iIzJmNmIyNCIvPjxyZWN0IHg9IjcyIiB5PSI0OCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjMmY2YjI0Ii8+PHJlY3QgeD0iODQiIHk9IjEyIiB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIGZpbGw9IiNhNmUyMmUiLz48cmVjdCB4PSI4NCIgeT0iMjQiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iIzRjOWEyYSIvPjxyZWN0IHg9Ijg0IiB5PSIzNiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjM2Y4NTI0Ii8+PHJlY3QgeD0iODQiIHk9IjQ4IiB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIGZpbGw9IiMyZjZiMjQiLz48cmVjdCB4PSI5NiIgeT0iMTIiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iI2E2ZTIyZSIvPjxyZWN0IHg9Ijk2IiB5PSIyNCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjNGM5YTJhIi8+PHJlY3QgeD0iOTYiIHk9IjM2IiB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIGZpbGw9IiMzZjg1MjQiLz48cmVjdCB4PSI5NiIgeT0iNDgiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iIzI5NWYyMCIvPjxyZWN0IHg9IjEwOCIgeT0iMTIiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iI2I0ZWUzYyIvPjxyZWN0IHg9IjEwOCIgeT0iMjQiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iIzRjOWEyYSIvPjxyZWN0IHg9IjEwOCIgeT0iMzYiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iIzRjOWEyYSIvPjxyZWN0IHg9IjEwOCIgeT0iNDgiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iIzJmNmIyNCIvPjxyZWN0IHg9IjEyMCIgeT0iMCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjYjRlZTNjIi8+PHJlY3QgeD0iMTIwIiB5PSIxMiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjNGM5YTJhIi8+PHJlY3QgeD0iMTIwIiB5PSIyNCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjM2Y4NTI0Ii8+PHJlY3QgeD0iMTIwIiB5PSIzNiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjMmY2YjI0Ii8+PHJlY3QgeD0iMTIwIiB5PSI0OCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjMjk1ZjIwIi8+PHJlY3QgeD0iMTMyIiB5PSIxMiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjYTZlMjJlIi8+PHJlY3QgeD0iMTMyIiB5PSIyNCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjNGM5YTJhIi8+PHJlY3QgeD0iMTMyIiB5PSIzNiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjM2Y4NTI0Ii8+PHJlY3QgeD0iMTMyIiB5PSI0OCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjMjk1ZjIwIi8+PHJlY3QgeD0iMTQ0IiB5PSIxMiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjYTZlMjJlIi8+PHJlY3QgeD0iMTQ0IiB5PSIyNCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjNGM5YTJhIi8+PHJlY3QgeD0iMTQ0IiB5PSIzNiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjM2Y4NTI0Ii8+PHJlY3QgeD0iMTQ0IiB5PSI0OCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjMjk1ZjIwIi8+PHJlY3QgeD0iMTU2IiB5PSIxMiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjYTZlMjJlIi8+PHJlY3QgeD0iMTU2IiB5PSIyNCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjNGM5YTJhIi8+PHJlY3QgeD0iMTU2IiB5PSIzNiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjM2Y4NTI0Ii8+PHJlY3QgeD0iMTU2IiB5PSI0OCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjMjk1ZjIwIi8+PHJlY3QgeD0iMTY4IiB5PSIwIiB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIGZpbGw9IiNhNmUyMmUiLz48cmVjdCB4PSIxNjgiIHk9IjEyIiB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIGZpbGw9IiM0YzlhMmEiLz48cmVjdCB4PSIxNjgiIHk9IjI0IiB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIGZpbGw9IiMzZjg1MjQiLz48cmVjdCB4PSIxNjgiIHk9IjM2IiB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIGZpbGw9IiMyZjZiMjQiLz48cmVjdCB4PSIxNjgiIHk9IjQ4IiB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIGZpbGw9IiMyZjZiMjQiLz48cmVjdCB4PSIxODAiIHk9IjAiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iI2E2ZTIyZSIvPjxyZWN0IHg9IjE4MCIgeT0iMTIiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iIzRjOWEyYSIvPjxyZWN0IHg9IjE4MCIgeT0iMjQiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iIzNmODUyNCIvPjxyZWN0IHg9IjE4MCIgeT0iMzYiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iIzJmNmIyNCIvPjxyZWN0IHg9IjE4MCIgeT0iNDgiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iIzJmNmIyNCIvPjxyZWN0IHg9IjE5MiIgeT0iMCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjYTZlMjJlIi8+PHJlY3QgeD0iMTkyIiB5PSIxMiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjNGM5YTJhIi8+PHJlY3QgeD0iMTkyIiB5PSIyNCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjNGM5YTJhIi8+PHJlY3QgeD0iMTkyIiB5PSIzNiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjMjk1ZjIwIi8+PHJlY3QgeD0iMTkyIiB5PSI0OCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjMmY2YjI0Ii8+PHJlY3QgeD0iMjA0IiB5PSIyNCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjYTZlMjJlIi8+PHJlY3QgeD0iMjA0IiB5PSIzNiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjNGM5YTJhIi8+PHJlY3QgeD0iMjA0IiB5PSI0OCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjM2Y4NTI0Ii8+PHJlY3QgeD0iMjE2IiB5PSIxMiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjYTZlMjJlIi8+PHJlY3QgeD0iMjE2IiB5PSIyNCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjNGM5YTJhIi8+PHJlY3QgeD0iMjE2IiB5PSIzNiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjM2Y4NTI0Ii8+PHJlY3QgeD0iMjE2IiB5PSI0OCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjMmY2YjI0Ii8+PHJlY3QgeD0iMjI4IiB5PSIxMiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjYTZlMjJlIi8+PHJlY3QgeD0iMjI4IiB5PSIyNCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjNGM5YTJhIi8+PHJlY3QgeD0iMjI4IiB5PSIzNiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjNGM5YTJhIi8+PHJlY3QgeD0iMjI4IiB5PSI0OCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjMmY2YjI0Ii8+PC9zdmc+") repeat-x left top/240px 60px;image-rendering:pixelated}
+@media (max-width:760px){
+  .hero{padding:36px 0 110px}
+  .hero .wrap{grid-template-columns:1fr}
+  .hero-logo{order:-1;width:220px}
+}
+
+/* sections */
+section{padding:68px 0}
+h2{font-size:clamp(2rem,4.5vw,2.6rem);margin-bottom:14px}
+.lede{color:var(--muted);max-width:60ch;margin:0 0 30px}
+.band{background:var(--panel2);border-block:2px solid var(--line)}
+
+.about .wrap{display:grid;grid-template-columns:1fr 1fr;gap:36px 60px;align-items:start}
+.about p{color:var(--muted);margin:0 0 12px;max-width:52ch}
 .about p strong{color:var(--text)}
-.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:26px}
-.fact{border-left:3px solid var(--accent);padding:4px 0 4px 14px}
-.fact b{display:block}
-.fact span{color:var(--muted);font-size:.95rem}
+.facts{list-style:none;margin:0;padding:0}
+.facts li{position:relative;padding:12px 0 12px 24px;border-bottom:2px solid var(--line)}
+.facts li:first-child{border-top:2px solid var(--line)}
+.facts li::before{content:"";position:absolute;left:0;top:21px;width:10px;height:10px;background:var(--accent);box-shadow:4px 4px 0 var(--leaf)}
+.facts b{display:block}
+.facts span{color:var(--muted);font-size:.95rem}
+@media (max-width:760px){.about .wrap{grid-template-columns:1fr}}
 
-.rules{border-top:1px solid var(--line)}
-.rules>.wrap>p{color:var(--muted);margin:0 0 20px}
-.rules ul{list-style:none;margin:0 0 24px;padding:0;columns:2 260px;column-gap:28px}
-.rules li{break-inside:avoid;padding:9px 0 9px 16px;border-left:3px solid #c0392b;margin-bottom:8px;background:var(--panel)}
-.rules .report{color:var(--text);border-left:3px solid var(--accent);padding-left:14px;max-width:62ch}
-.crates{border-top:1px solid var(--line)}
-.crates>.wrap>p{color:var(--muted);max-width:62ch;margin:0 0 28px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px}
-.crate{background:var(--panel);border:1px solid var(--line);border-top:6px solid var(--c);padding:20px;display:flex;flex-direction:column;gap:12px}
-.box{width:56px;height:56px;background:var(--c);border:3px solid rgba(0,0,0,.35);box-shadow:inset 0 -12px 0 rgba(0,0,0,.22), inset 0 8px 0 rgba(255,255,255,.18)}
-.crate h3{font-size:1.4rem;color:var(--c)}
-.price{font-family:"Pixelify Sans",monospace;font-size:1.9rem;font-weight:700}
-.price small{font-family:Figtree,sans-serif;font-size:.85rem;color:var(--muted);font-weight:400}
+.rules ul{list-style:none;margin:0 0 26px;padding:0;columns:2 260px;column-gap:20px}
+.rules li{break-inside:avoid;position:relative;padding:9px 12px 9px 40px;margin-bottom:8px;background:var(--panel);border:2px solid var(--line)}
+.rules li::before{content:"";position:absolute;left:15px;top:50%;margin-top:-5px;width:10px;height:10px;background:var(--bad)}
+.report{max-width:62ch;margin:0;padding-left:16px;border-left:4px solid var(--accent)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:20px}
+.crate{display:flex;flex-direction:column;background:var(--panel);border:2px solid var(--line)}
+.crate .top{display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:4px solid var(--c);background:color-mix(in srgb,var(--c) 16%,var(--panel))}
+.crate .top h3{font-size:1.5rem}
+.crate .body{display:flex;flex-direction:column;gap:14px;padding:18px 20px 20px;flex:1}
 .crate .btn{margin-top:auto;text-align:center}
-.note{margin-top:22px;color:var(--muted);font-size:.92rem}
-.ranks{border-top:1px solid var(--line)}
-.ranks>.wrap>p{color:var(--muted);max-width:62ch;margin:0 0 28px}
+.cube{width:56px;height:56px;flex:none}
+.cube polygon{stroke:rgba(0,0,0,.3);stroke-width:1.5;stroke-linejoin:round}
+.cube .t{fill:color-mix(in srgb,var(--c) 60%,#fff)}
+.cube .l{fill:var(--c)}
+.cube .r{fill:color-mix(in srgb,var(--c) 62%,#000)}
+.price{font-family:"Pixelify Sans",monospace;font-size:2.1rem;font-weight:700;line-height:1}
+.price small{font-family:Figtree,sans-serif;font-size:.85rem;color:var(--muted);font-weight:400}
 .perks{list-style:none;margin:0;padding:0;font-size:.95rem}
-.perks li{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid var(--line)}
+.perks li{display:flex;justify-content:space-between;gap:14px;padding:7px 0;border-bottom:2px solid var(--line)}
 .perks li span:first-child{color:var(--muted)}
 .perks li span:last-child{text-align:right;font-weight:500}
-.perks li.cmd{display:block;border-bottom:0;padding:3px 0;font-family:"Pixelify Sans",monospace;color:var(--c)}
+.perks li.cmd{display:block;border-bottom:0;padding:10px 0 0;font-family:"Pixelify Sans",monospace;font-size:1.05rem}
+.perks li.cmd code{background:rgba(0,0,0,.22);padding:3px 10px;border:2px solid var(--line);color:var(--text)}
+.note{margin:26px 0 0;color:var(--muted);font-size:.92rem;max-width:70ch}
+.ranks .lede code{background:rgba(0,0,0,.22);padding:1px 7px;border:2px solid var(--line);color:var(--text);font-size:.95em}
 
-footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:.9rem}
-footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 28px}
+footer{border-top:2px solid var(--line);padding:32px 0;color:var(--muted);font-size:.92rem}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px 28px}
+.foot-brand{display:flex;align-items:center;gap:14px}
+.foot-brand img{width:46px;height:46px;display:block}
+footer p{margin:0}
 footer nav{display:flex;flex-wrap:wrap;gap:6px 22px}
 footer nav a{color:var(--muted);text-decoration:none}
-footer nav a:hover{color:var(--accent);text-decoration:underline}
-footer p{margin:0}
-#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--accent);color:#0b1a10;padding:10px 18px;border-radius:4px;font-weight:600;opacity:0;transition:.25s;pointer-events:none}
+footer nav a:hover{color:var(--text);text-decoration:underline}
+
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--accent);color:var(--ink);padding:10px 18px;border-radius:2px;font-weight:600;opacity:0;transition:.25s;pointer-events:none;box-shadow:0 4px 0 var(--accent-edge)}
 #toast.show{opacity:1;transform:translateX(-50%)}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}#toast{transition:none}}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  #toast,button,.btn{transition:none}
+  .hero-logo img{animation:none}
+}
 </style>
 </head>
 <body>
 
-<header class="hero">
+<nav class="nav" aria-label="Main">
   <div class="wrap">
-    <h1>Terrax SMP</h1>
-    <p class="lead">Join with this address in Minecraft Java Edition:</p>
-    <div class="ip">
-      <code id="ip">play.terraxsmp.online</code>
-      <button id="copy" type="button">Copy address</button>
-    </div>
+    <a class="brand" href="#top"><img src="logo-small.png" width="36" height="36" alt="">Terrax SMP</a>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#rules">Rules</a></li>
+      <li><a href="#crates">Crates</a></li>
+      <li><a href="#ranks">Ranks</a></li>
+      <li><a href="https://discord.gg/yK6DUpNHT4" target="_blank" rel="noopener">Discord</a></li>
+    </ul>
+    <a class="btn" href="order.html">Order</a>
   </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <h1>Terrax SMP</h1>
+      <p class="lead">A premium survival server with a player economy, crates and ranks. Join on Minecraft Java Edition.</p>
+      <div class="ip-plate">
+        <code id="ip">play.terraxsmp.online</code>
+        <button id="copy" type="button">Copy address</button>
+      </div>
+    </div>
+    <div class="hero-logo"><img src="logo.png" width="640" height="640" alt="Terrax SMP logo: a Minecraft-style world cube with the letters T and X"></div>
+  </div>
+  <div class="ground" aria-hidden="true"></div>
 </header>
 
 <section class="about" id="about">
   <div class="wrap">
-    <h2>About the server</h2>
-    <p><strong>Terrax SMP is a premium server.</strong> You need an official Minecraft Java Edition account to join.</p>
-    <p>The server is based on DonutSMP. You start with nothing, earn money, trade with other players and work your way up through the economy. Crates give you a way to get rare items faster, and they are opened with keys you can buy below.</p>
-    <div class="facts">
-      <div class="fact"><b>Java Edition</b><span>Add the address above in the multiplayer menu and join.</span></div>
-      <div class="fact"><b>Premium accounts only</b><span>Cracked accounts can no longer join.</span></div>
-      <div class="fact"><b>Player economy</b><span>Earn money, sell items, buy from the shop and trade with other players.</span></div>
-      <div class="fact"><b>Teleports and homes</b><span>Send teleport requests to friends, set homes and use random teleport.</span></div>
-      <div class="fact"><b>Crates</b><span>Open crates in game with keys. Buy keys below.</span></div>
-      <div class="fact"><b>Fair play</b><span>Staff enforce the rules, and cheaters are banned.</span></div>
+    <div>
+      <h2>About the server</h2>
+      <p><strong>Terrax SMP is a premium server.</strong> You need an official Minecraft Java Edition account to join.</p>
+      <p>The server is based on DonutSMP. You start with nothing, earn money, trade with other players and work your way up through the economy. Crates give you a way to get rare items faster, and they are opened with keys you can buy below.</p>
     </div>
+    <ul class="facts">
+      <li><b>Java Edition</b><span>Add the address above in the multiplayer menu and join.</span></li>
+      <li><b>Premium accounts only</b><span>Cracked accounts can no longer join.</span></li>
+      <li><b>Player economy</b><span>Earn money, sell items, buy from the shop and trade with other players.</span></li>
+      <li><b>Teleports and homes</b><span>Send teleport requests to friends, set homes and use random teleport.</span></li>
+      <li><b>Crates</b><span>Open crates in game with keys. Buy keys below.</span></li>
+      <li><b>Fair play</b><span>Staff enforce the rules, and cheaters are banned.</span></li>
+    </ul>
   </div>
 </section>
 
-<section class="rules" id="rules">
+<section class="rules band" id="rules">
   <div class="wrap">
     <h2>Server rules</h2>
-    <p>Break these and you can be muted, kicked or banned.</p>
+    <p class="lede">Break these and you can be muted, kicked or banned.</p>
     <ul>
       <li>No unfair mods or hacked clients</li>
       <li>No macros</li>
@@ -129,16 +200,16 @@ footer p{margin:0}
 <section class="crates" id="crates">
   <div class="wrap">
     <h2>Crate keys</h2>
-    <p>Each key opens one crate. In game, left click a crate to open it, or right click to see what is inside before you buy.</p>
+    <p class="lede">Each key opens one crate. In game, left click a crate to open it, or right click to see what is inside before you buy.</p>
     <div class="grid" id="grid"></div>
     <p class="note">Prices are in euros. Place your order on the order page and a staff member will contact you on Discord to confirm and arrange payment. Your keys are added to your account on the server once payment is confirmed. Have your Minecraft username ready.</p>
   </div>
 </section>
 
-<section class="ranks" id="ranks">
+<section class="ranks band" id="ranks">
   <div class="wrap">
     <h2>Ranks</h2>
-    <p>Ranks give you more homes, bigger daily rewards, lower auction tax and handy commands. Higher ranks include everything from the ones below them.</p>
+    <p class="lede">Every rank unlocks its own PvP kit. The higher the rank, the better the gear and the shorter the cooldown. Member is free and every player starts with it. Claim your kit in game with <code>/kit</code> or <code>/kitmenu</code>.</p>
     <div class="grid" id="rank-grid"></div>
     <p class="note">Prices are in euros. Place your order on the order page and a staff member will contact you on Discord to confirm and arrange payment. Have your Minecraft username ready.</p>
   </div>
@@ -146,9 +217,12 @@ footer p{margin:0}
 
 <footer>
   <div class="wrap">
-    <div>
-      <p>&copy; <span id="year">2026</span> Terrax SMP. All rights reserved.</p>
-      <p>Terrax SMP is not affiliated with Mojang or Microsoft.</p>
+    <div class="foot-brand">
+      <img src="logo-small.png" width="46" height="46" alt="">
+      <div>
+        <p>&copy; <span id="year">2026</span> Terrax SMP. All rights reserved.</p>
+        <p>Terrax SMP is not affiliated with Mojang or Microsoft.</p>
+      </div>
     </div>
     <nav aria-label="Legal">
       <a href="privacy.html">Privacy Policy</a>
@@ -173,8 +247,26 @@ const CRATES = [
   { name: "Terrax Sovereign Crate", price: 20.00, color: "#22b8cf" }
 ];
 
+/* ---- Ranks: EDIT THE PRICES, they are placeholders ---- */
+const RANKS = [
+  { name: "VIP",     key: "vip",      price: 5.00,  color: "#55ff55", cooldown: "24 min", armor: "Diamond, Mending",             sword: "Diamond, Sharpness V",  anchors: 2, glow: 1 },
+  { name: "Premium", key: "premium",  price: 10.00, color: "#e6b800", cooldown: "21 min", armor: "Diamond, gold trim",           sword: "Diamond, Sharpness V",  anchors: 3, glow: 1 },
+  { name: "VIP+",    key: "vipplus",  price: 15.00, color: "#33d6e6", cooldown: "17 min", armor: "Netherite (diamond chest)",    sword: "Netherite, Sharpness V", anchors: 3, glow: 2 },
+  { name: "Titan",   key: "titan",    price: 25.00, color: "#ff55ff", cooldown: "10 min", armor: "Full Netherite, redstone trim", sword: "Netherite, Fire Aspect II", anchors: 4, glow: 2 },
+  { name: "Mythic",  key: "mythic",   price: 40.00, color: "#ffaa00", cooldown: "5 min",  armor: "Full Netherite, amethyst trim", sword: "Netherite, Fire Aspect II", anchors: 5, glow: 2,
+    extra: "Swift Sneak III, Soul Speed III" }
+];
+
 document.getElementById("ip").textContent = SERVER_IP;
 document.getElementById("year").textContent = new Date().getFullYear();
+
+function cubeSVG() {
+  return '<svg class="cube" viewBox="0 0 64 64" aria-hidden="true">' +
+    '<polygon class="t" points="32,4 60,18 32,32 4,18"/>' +
+    '<polygon class="l" points="4,18 32,32 32,62 4,48"/>' +
+    '<polygon class="r" points="60,18 32,32 32,62 60,48"/></svg>';
+}
+const buy = item => BUY_LINK + "?add=" + encodeURIComponent(item);
 
 const grid = document.getElementById("grid");
 CRATES.forEach(c => {
@@ -182,25 +274,17 @@ CRATES.forEach(c => {
   el.className = "crate";
   el.style.setProperty("--c", c.color);
   el.innerHTML =
-    '<div class="box" aria-hidden="true"></div>' +
-    '<h3></h3>' +
-    '<div class="price">€' + c.price.toFixed(2) + ' <small>per key</small></div>' +
-    '<a class="btn">Buy a key</a>';
+    '<div class="top">' + cubeSVG() + '<h3></h3></div>' +
+    '<div class="body">' +
+      '<div class="price">€' + c.price.toFixed(2) + ' <small>per key</small></div>' +
+      '<a class="btn">Buy a key</a>' +
+    '</div>';
   el.querySelector("h3").textContent = c.name;
-  el.querySelector("a").href = BUY_LINK;
-  el.querySelector("a").setAttribute("aria-label", "Buy a " + c.name + " key");
+  const a = el.querySelector("a");
+  a.href = buy(c.name + " Key");
+  a.setAttribute("aria-label", "Buy a " + c.name + " key");
   grid.appendChild(el);
 });
-
-/* ---- Ranks: EDIT THE PRICES, they are placeholders ---- */
-const RANKS = [
-  { name: "+ Rank",   price: 5.00,  color: "#55ff55", homes: 7,  daily: "$2,500 + 5 shards",   auctions: "15 (4% tax)", orders: 8,  tp: "2s",
-    cmds: ["/craft"] },
-  { name: "++ Rank",  price: 10.00, color: "#55ffff", homes: 15, daily: "$7,500 + 15 shards",  auctions: "25 (3% tax)", orders: 12, tp: "1s",
-    cmds: ["/craft", "/enderchest"] },
-  { name: "+++ Rank", price: 18.00, color: "#ff55ff", homes: 30, daily: "$20,000 + 40 shards", auctions: "40 (2% tax)", orders: 20, tp: "0s",
-    cmds: ["/craft", "/enderchest", "/feed"] }
-];
 
 const rankGrid = document.getElementById("rank-grid");
 RANKS.forEach(r => {
@@ -208,29 +292,33 @@ RANKS.forEach(r => {
   el.className = "crate";
   el.style.setProperty("--c", r.color);
   el.innerHTML =
-    '<div class="box" aria-hidden="true"></div>' +
-    '<h3></h3>' +
-    '<div class="price">€' + r.price.toFixed(2) + ' <small>one rank</small></div>' +
-    '<ul class="perks"></ul>' +
-    '<a class="btn">Buy this rank</a>';
+    '<div class="top">' + cubeSVG() + '<h3></h3></div>' +
+    '<div class="body">' +
+      '<div class="price">€' + r.price.toFixed(2) + ' <small>one-time</small></div>' +
+      '<ul class="perks"></ul>' +
+      '<a class="btn">Buy this rank</a>' +
+    '</div>';
   el.querySelector("h3").textContent = r.name;
   const list = el.querySelector(".perks");
-  [["Homes", r.homes], ["Daily reward", r.daily], ["Auction listings", r.auctions],
-   ["Order slots", r.orders], ["Home teleport delay", r.tp]].forEach(p => {
+  const rows = [["Kit cooldown", r.cooldown], ["Armor", r.armor], ["Sword", r.sword],
+    ["Respawn anchors", r.anchors], ["Glowstone stacks", r.glow]];
+  if (r.extra) rows.push(["Extras", r.extra]);
+  rows.forEach(p => {
     const li = document.createElement("li");
     li.innerHTML = "<span></span><span></span>";
     li.children[0].textContent = p[0];
     li.children[1].textContent = p[1];
     list.appendChild(li);
   });
-  r.cmds.forEach(c => {
-    const li = document.createElement("li");
-    li.className = "cmd";
-    li.textContent = c;
-    list.appendChild(li);
-  });
-  el.querySelector("a").href = BUY_LINK;
-  el.querySelector("a").setAttribute("aria-label", "Buy the " + r.name);
+  const cmd = document.createElement("li");
+  cmd.className = "cmd";
+  const code = document.createElement("code");
+  code.textContent = "/kit " + r.key;
+  cmd.appendChild(code);
+  list.appendChild(cmd);
+  const a = el.querySelector("a");
+  a.href = buy(r.name + " Rank");
+  a.setAttribute("aria-label", "Buy the " + r.name + " rank");
   rankGrid.appendChild(el);
 });
 

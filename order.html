@@ -4,56 +4,114 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Place an order – Terrax SMP</title>
+<link rel="icon" type="image/png" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0f1512;--panel:#17211c;--line:#2a3a32;--text:#e8efe9;--muted:#9bb0a3;--accent:#7bd88f;--bad:#e5645a;color-scheme:dark}
-@media (prefers-color-scheme:light){:root{--bg:#eef3ee;--panel:#fff;--line:#cfdcd2;--text:#14201a;--muted:#51675a;--accent:#1f8a3b;--bad:#b3261e;color-scheme:light}}
+:root{
+  --bg:#0d3350; --panel:#134566; --panel2:#0f3a58; --line:#245f86; --text:#f2fbff; --muted:#a9cde0;
+  --accent:#a6e22e; --accent-edge:#5f8f12; --ink:#10300f; --leaf:#4c9a2a; --link:#8fdcff; --bad:#ef6a5e;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){
+  :root{--bg:#e8f4fa; --panel:#ffffff; --panel2:#f2f9fd; --line:#b9d8e8; --text:#0d2b40; --muted:#47697d; --link:#0f5f99; --bad:#b3261e; --accent-edge:#6a9c14; color-scheme:light}
+}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Figtree,system-ui,sans-serif;line-height:1.6}
-.wrap{max-width:720px;margin:0 auto;padding:40px 20px 64px}
-h1,h2{font-family:"Pixelify Sans",monospace;line-height:1.1;margin:0}
-h1{font-size:2.4rem;margin-bottom:8px}
-h2{font-size:1.4rem;margin:32px 0 12px}
-a{color:var(--accent)}
-.lead{color:var(--muted);margin:0 0 8px}
-label{display:block;font-weight:600;margin:16px 0 6px}
-input[type=text],input[type=number],select,textarea{width:100%;font:inherit;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:10px 12px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+h1,h2{font-family:"Pixelify Sans",monospace;line-height:1.05;margin:0;font-weight:700}
+a{color:var(--link)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+
+button,.btn{font:inherit;font-weight:600;cursor:pointer;border:0;background:var(--accent);color:var(--ink);padding:12px 24px;border-radius:2px;text-decoration:none;display:inline-block;box-shadow:0 4px 0 var(--accent-edge);transition:transform .08s,box-shadow .08s}
+button:hover,.btn:hover{transform:translateY(1px);box-shadow:0 3px 0 var(--accent-edge)}
+button:active,.btn:active{transform:translateY(4px);box-shadow:0 0 0 var(--accent-edge)}
+button:disabled{opacity:.6;cursor:wait;transform:none}
+
+.nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:2px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;height:60px}
+.brand{display:flex;align-items:center;gap:10px;font-family:"Pixelify Sans",monospace;font-weight:700;font-size:1.3rem;color:var(--text);text-decoration:none}
+.brand img{width:36px;height:36px;display:block}
+.nav .back{color:var(--muted);text-decoration:none;font-weight:500}
+.nav .back:hover{color:var(--text)}
+
+main.wrap{max-width:760px;padding-top:44px;padding-bottom:0}
+h1{font-size:clamp(2.4rem,7vw,3.4rem);margin-bottom:10px}
+h2{font-size:1.7rem;margin:38px 0 6px}
+.lead{color:var(--muted);margin:0;max-width:56ch}
+.hint{color:var(--muted);font-size:.92rem;margin:4px 0 0}
+
+label{display:block;font-weight:600;margin:18px 0 6px}
+input[type=text],select,textarea{width:100%;font:inherit;color:var(--text);background:var(--panel);border:2px solid var(--line);border-radius:2px;padding:10px 12px}
 textarea{min-height:90px;resize:vertical}
-.hint{color:var(--muted);font-size:.9rem;margin:4px 0 0}
-:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-.item{display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--panel);border:1px solid var(--line);padding:10px 14px;margin-bottom:8px}
-.item b{font-weight:600}
-.item small{color:var(--muted);margin-left:8px}
-.item input{width:76px;text-align:center}
-.total{display:flex;justify-content:space-between;font-family:"Pixelify Sans",monospace;font-size:1.6rem;border-top:2px solid var(--line);padding-top:14px;margin-top:18px}
-button{font:inherit;font-weight:600;cursor:pointer;border:2px solid var(--accent);background:var(--accent);color:#0b1a10;padding:12px 22px;border-radius:4px;margin-top:22px}
-button:disabled{opacity:.6;cursor:wait}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+@media (max-width:600px){.two{grid-template-columns:1fr}}
+
+.items{display:grid;gap:10px;margin-top:14px}
+.item{--c:#888;display:flex;align-items:center;gap:14px;background:var(--panel);border:2px solid var(--line);border-left:6px solid var(--c);padding:10px 14px}
+.item.on{background:color-mix(in srgb,var(--c) 14%,var(--panel));border-color:var(--c)}
+.item .cube{width:40px;height:40px;flex:none}
+.item .info{flex:1;min-width:0}
+.item .info b{display:block;font-weight:600;line-height:1.3}
+.item .info small{color:var(--muted)}
+.cube polygon{stroke:rgba(0,0,0,.3);stroke-width:1.5;stroke-linejoin:round}
+.cube .t{fill:color-mix(in srgb,var(--c) 60%,#fff)}
+.cube .l{fill:var(--c)}
+.cube .r{fill:color-mix(in srgb,var(--c) 62%,#000)}
+.step{display:flex;align-items:stretch}
+.step button{padding:0;width:38px;height:38px;font-size:1.3rem;line-height:1;background:var(--panel2);color:var(--text);border:2px solid var(--line);box-shadow:none;border-radius:2px}
+.step button:hover{background:var(--line);transform:none;box-shadow:none}
+.step button:active{transform:none}
+.step input{width:50px;height:38px;text-align:center;font:inherit;font-weight:600;color:var(--text);background:var(--bg);border:2px solid var(--line);border-inline:0;border-radius:0;padding:0;-moz-appearance:textfield}
+.step input::-webkit-outer-spin-button,.step input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+
+.summary{position:sticky;bottom:0;z-index:10;margin:40px -20px 0;padding:16px 20px calc(16px + env(safe-area-inset-bottom,0px));background:color-mix(in srgb,var(--bg) 94%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-top:2px solid var(--line)}
+.total{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.total .sum{font-family:"Pixelify Sans",monospace;font-size:1.9rem;font-weight:700;display:flex;gap:14px;align-items:baseline}
+.total .sum span:first-child{font-size:1.2rem;color:var(--muted);font-weight:500}
 .hp{position:absolute;left:-9999px}
-#msg{margin-top:18px;padding:12px 14px;border-left:3px solid var(--accent);background:var(--panel);display:none}
+#msg{margin-top:14px;padding:12px 14px;border-left:4px solid var(--accent);background:var(--panel);display:none}
 #msg.err{border-color:var(--bad)}
-.terms{color:var(--muted);font-size:.9rem;margin-top:26px}
+.terms{color:var(--muted);font-size:.9rem;margin:26px 0 56px;max-width:62ch}
+@media (prefers-reduced-motion:reduce){button,.btn{transition:none}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <p><a href="index.html">&larr; Back to Terrax SMP</a></p>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="logo-small.png" width="36" height="36" alt="">Terrax SMP</a>
+    <a class="back" href="index.html">Back to the site</a>
+  </div>
+</header>
+
+<main class="wrap">
   <h1>Place an order</h1>
   <p class="lead">Fill this in and our staff will contact you on Discord to confirm and arrange payment. You don't pay on this page.</p>
 
   <form id="f" novalidate>
-    <label for="mc">Minecraft Java username</label>
-    <input type="text" id="mc" maxlength="16" autocomplete="off" required>
-
-    <label for="dc">Your Discord username</label>
-    <input type="text" id="dc" maxlength="40" autocomplete="off" required>
+    <h2>Your details</h2>
+    <div class="two">
+      <div>
+        <label for="mc">Minecraft Java username</label>
+        <input type="text" id="mc" maxlength="16" autocomplete="off" required>
+      </div>
+      <div>
+        <label for="dc">Your Discord username</label>
+        <input type="text" id="dc" maxlength="40" autocomplete="off" required>
+      </div>
+    </div>
     <p class="hint">Staff will message you or invite you to a ticket on our Discord. <a id="dlink" href="#" target="_blank" rel="noopener">Join the Discord</a> first so we can reach you.</p>
 
-    <h2>What do you want?</h2>
-    <div id="items"></div>
-    <div class="total"><span>Total</span><span id="total">€0.00</span></div>
+    <h2>Crate keys</h2>
+    <div class="items" id="crates"></div>
 
+    <h2>Ranks</h2>
+    <p class="hint">One of each rank per order. Member is free, so it isn't listed.</p>
+    <div class="items" id="ranks"></div>
+
+    <h2>Payment and notes</h2>
     <label for="pay">Preferred payment method</label>
     <select id="pay"></select>
 
@@ -62,12 +120,17 @@ button:disabled{opacity:.6;cursor:wait}
 
     <input class="hp" type="text" id="website" tabindex="-1" autocomplete="off" aria-hidden="true">
 
-    <button type="submit" id="send">Send order</button>
-    <div id="msg" role="status" aria-live="polite"></div>
+    <div class="summary">
+      <div class="total">
+        <div class="sum"><span>Total</span><span id="total">€0.00</span></div>
+        <button type="submit" id="send">Send order</button>
+      </div>
+      <div id="msg" role="status" aria-live="polite"></div>
+    </div>
   </form>
 
   <p class="terms">By ordering you agree that sales are final once items are delivered and that chargebacks lead to a permanent ban. Terrax SMP is not affiliated with Mojang or Microsoft.</p>
-</div>
+</main>
 
 <script>
 /* ---- EDIT THESE ---- */
@@ -75,15 +138,17 @@ const WEBHOOK_URL = "https://canary.discord.com/api/webhooks/1570414317373755405
 const DISCORD_INVITE = "https://discord.gg/yK6DUpNHT4";
 const PAYMENT_METHODS = ["PayPal", "Revolut", "Bank transfer"]; // change to what you accept
 const ITEMS = [ // keep in sync with index.html
-  { name: "Novice Crate Key", price: 1.50 },
-  { name: "Overworld Crate Key", price: 3.00 },
-  { name: "Netherbound Crate Key", price: 5.00 },
-  { name: "Endgame Crate Key", price: 8.00 },
-  { name: "Mythic Crate Key", price: 12.00 },
-  { name: "Terrax Sovereign Crate Key", price: 20.00 },
-  { name: "+ Rank", price: 5.00, max: 1 },
-  { name: "++ Rank", price: 10.00, max: 1 },
-  { name: "+++ Rank", price: 18.00, max: 1 }
+  { name: "Novice Crate Key", price: 1.50, g: "crates", color: "#d9dedb" },
+  { name: "Overworld Crate Key", price: 3.00, g: "crates", color: "#6b8e23" },
+  { name: "Netherbound Crate Key", price: 5.00, g: "crates", color: "#c0392b" },
+  { name: "Endgame Crate Key", price: 8.00, g: "crates", color: "#9b59d0" },
+  { name: "Mythic Crate Key", price: 12.00, g: "crates", color: "#f08a24" },
+  { name: "Terrax Sovereign Crate Key", price: 20.00, g: "crates", color: "#22b8cf" },
+  { name: "VIP Rank", price: 5.00, max: 1, g: "ranks", color: "#55ff55" },
+  { name: "Premium Rank", price: 10.00, max: 1, g: "ranks", color: "#e6b800" },
+  { name: "VIP+ Rank", price: 15.00, max: 1, g: "ranks", color: "#33d6e6" },
+  { name: "Titan Rank", price: 25.00, max: 1, g: "ranks", color: "#ff55ff" },
+  { name: "Mythic Rank", price: 40.00, max: 1, g: "ranks", color: "#ffaa00" }
 ];
 
 const $ = id => document.getElementById(id);
@@ -91,25 +156,51 @@ const eur = n => "€" + n.toFixed(2);
 $("dlink").href = DISCORD_INVITE;
 PAYMENT_METHODS.forEach(m => { const o = document.createElement("option"); o.textContent = m; $("pay").appendChild(o); });
 
-const qtyEls = [];
+const CUBE = '<svg class="cube" viewBox="0 0 64 64" aria-hidden="true">' +
+  '<polygon class="t" points="32,4 60,18 32,32 4,18"/>' +
+  '<polygon class="l" points="4,18 32,32 32,62 4,48"/>' +
+  '<polygon class="r" points="60,18 32,32 32,62 60,48"/></svg>';
+
+const qtyEls = [], rowEls = [];
 ITEMS.forEach((it, i) => {
-  const row = document.createElement("div"); row.className = "item";
-  const left = document.createElement("div");
-  const b = document.createElement("b"); b.textContent = it.name;
-  const s = document.createElement("small"); s.textContent = eur(it.price);
-  left.append(b, s);
-  const q = document.createElement("input");
-  q.type = "number"; q.min = 0; q.max = it.max || 20; q.value = 0;
+  const max = it.max || 20;
+  const row = document.createElement("div");
+  row.className = "item";
+  row.style.setProperty("--c", it.color);
+  row.innerHTML = CUBE + '<div class="info"><b></b><small></small></div>' +
+    '<div class="step"><button type="button" class="minus"></button><input type="number"><button type="button" class="plus"></button></div>';
+  row.querySelector("b").textContent = it.name;
+  row.querySelector("small").textContent = eur(it.price);
+  const q = row.querySelector("input");
+  q.min = 0; q.max = max; q.value = 0;
   q.setAttribute("aria-label", "Quantity of " + it.name);
+  const minus = row.querySelector(".minus"), plus = row.querySelector(".plus");
+  minus.textContent = "\u2212"; plus.textContent = "+";
+  minus.setAttribute("aria-label", "Remove one " + it.name);
+  plus.setAttribute("aria-label", "Add one " + it.name);
+  const set = n => { q.value = Math.max(0, Math.min(max, n)); update(); };
+  minus.addEventListener("click", () => set((parseInt(q.value, 10) || 0) - 1));
+  plus.addEventListener("click", () => set((parseInt(q.value, 10) || 0) + 1));
   q.addEventListener("input", update);
-  qtyEls.push(q);
-  row.append(left, q); $("items").appendChild(row);
+  qtyEls.push(q); rowEls.push(row);
+  $(it.g).appendChild(row);
 });
 
 function chosen() {
   return ITEMS.map((it, i) => ({ it, n: Math.max(0, Math.min(it.max || 20, parseInt(qtyEls[i].value, 10) || 0)) })).filter(x => x.n > 0);
 }
-function update() { $("total").textContent = eur(chosen().reduce((t, x) => t + x.it.price * x.n, 0)); }
+function update() {
+  $("total").textContent = eur(chosen().reduce((t, x) => t + x.it.price * x.n, 0));
+  rowEls.forEach((row, i) => row.classList.toggle("on", (parseInt(qtyEls[i].value, 10) || 0) > 0));
+}
+
+/* "Buy" buttons on the main page link here with ?add=Item Name */
+try {
+  const add = new URLSearchParams(location.search).get("add");
+  const idx = ITEMS.findIndex(x => x.name === add);
+  if (idx > -1) qtyEls[idx].value = 1;
+} catch (_) {}
+update();
 
 function show(text, bad) { const m = $("msg"); m.textContent = text; m.className = bad ? "err" : ""; m.style.display = "block"; }
 
