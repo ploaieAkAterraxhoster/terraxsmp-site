@@ -4,47 +4,68 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Privacy Policy - Terrax SMP</title>
+<link rel="icon" type="image/png" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0f1512; --panel:#17211c; --line:#2a3a32; --text:#e8efe9; --muted:#9bb0a3; --accent:#7bd88f;
+  --bg:#0d3350; --panel:#134566; --panel2:#0f3a58; --line:#245f86; --text:#f2fbff; --muted:#a9cde0;
+  --accent:#a6e22e; --leaf:#4c9a2a; --link:#8fdcff;
   color-scheme:dark;
 }
 @media (prefers-color-scheme:light){
-  :root{--bg:#eef3ee; --panel:#ffffff; --line:#cfdcd2; --text:#14201a; --muted:#51675a; --accent:#1f8a3b; color-scheme:light}
+  :root{--bg:#e8f4fa; --panel:#ffffff; --panel2:#f2f9fd; --line:#b9d8e8; --text:#0d2b40; --muted:#47697d; --link:#0f5f99; color-scheme:light}
 }
 *{box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Figtree,system-ui,sans-serif;line-height:1.65}
-.wrap{max-width:1000px;margin:0 auto;padding:0 20px}
-h1,h2{font-family:"Pixelify Sans",monospace;margin:0;line-height:1.15}
-a{color:var(--accent)}
-:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-.top{padding:22px 0;border-bottom:1px solid var(--line)}
-.top a{font-family:"Pixelify Sans",monospace;font-weight:700;font-size:1.2rem;text-decoration:none}
-main{padding:48px 0 56px}
-h1{font-size:clamp(2rem,6vw,3rem);margin-bottom:8px}
-.updated{color:var(--muted);margin:0 0 32px}
-h2{font-size:1.5rem;margin:36px 0 10px;padding-left:14px;border-left:3px solid var(--accent)}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+h1,h2{font-family:"Pixelify Sans",monospace;margin:0;line-height:1.1;font-weight:700}
+a{color:var(--link)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+
+.nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:2px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;height:60px}
+.brand{display:flex;align-items:center;gap:10px;font-family:"Pixelify Sans",monospace;font-weight:700;font-size:1.3rem;color:var(--text);text-decoration:none}
+.brand img{width:36px;height:36px;display:block}
+.nav .back{color:var(--muted);text-decoration:none;font-weight:500}
+.nav .back:hover{color:var(--text)}
+
+main{padding:52px 0 64px}
+main .wrap{max-width:820px}
+h1{font-size:clamp(2.2rem,6vw,3.2rem);margin-bottom:8px}
+.updated{color:var(--muted);margin:0 0 30px}
+h2{font-size:1.55rem;margin:40px 0 10px;padding-left:16px;border-left:6px solid var(--accent)}
 main p,main li{max-width:68ch}
 main p{margin:0 0 12px;color:var(--muted)}
+main ul{padding-left:22px;margin:0 0 12px}
 main li{color:var(--muted);margin-bottom:6px}
+main li::marker{color:var(--leaf)}
 main strong{color:var(--text)}
-footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:.9rem}
-footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 28px}
+
+footer{border-top:2px solid var(--line);padding:32px 0;color:var(--muted);font-size:.92rem}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px 28px}
+.foot-brand{display:flex;align-items:center;gap:14px}
+.foot-brand img{width:46px;height:46px;display:block}
+footer p{margin:0}
 footer nav{display:flex;flex-wrap:wrap;gap:6px 22px}
 footer nav a{color:var(--muted);text-decoration:none}
-footer nav a:hover{color:var(--accent);text-decoration:underline}
-footer p{margin:0}
+footer nav a:hover{color:var(--text);text-decoration:underline}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
-<header class="top"><div class="wrap"><a href="index.html">Terrax SMP</a></div></header>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="./"><img src="logo-small.png" width="36" height="36" alt="">Terrax SMP</a>
+    <a class="back" href="./">Back to the site</a>
+  </div>
+</header>
 <main>
   <div class="wrap">
     <h1>Privacy Policy</h1>
-    <p class="updated">Last updated: 11 November 2026</p>
+    <p class="updated">Last updated: 16 November 2026</p>
 
     <p>This policy explains what information Terrax SMP ("we", "us") collects when you use our Minecraft server, our website and our Discord, and what we do with it.</p>
 
@@ -53,12 +74,12 @@ footer p{margin:0}
       <li><strong>Minecraft account data:</strong> your username and UUID.</li>
       <li><strong>IP address:</strong> your IP address when you connect to the server, used for security, anti-cheat and to stop ban evasion.</li>
       <li><strong>Gameplay data:</strong> chat messages, commands, balances, homes, inventories, punishments and similar server logs.</li>
-      <li><strong>Purchase data:</strong> your Minecraft username, what you bought, the amount and the order reference. Payments are handled by a third-party payment provider, so we never see or store your card number.</li>
+      <li><strong>Purchase data:</strong> what you enter in our order form (your Minecraft username, Discord username, preferred payment method, notes and the items you want), plus the amount and the order reference. Payments are handled by a third-party payment provider, so we never see or store your card number.</li>
       <li><strong>Discord data:</strong> your Discord username and ID when you join our Discord, open a ticket or buy something there.</li>
     </ul>
 
     <h2>Our website</h2>
-    <p>The website does not use cookies, accounts or analytics. It is hosted on GitHub Pages and loads fonts from Google Fonts, so GitHub and Google receive your IP address and browser details when you open it, as they do for any website they serve. See their own privacy policies for details.</p>
+    <p>The website does not use cookies, accounts or analytics. When you send an order, the order form posts what you typed to a private channel on our Discord, where our staff read it. Your browser also keeps the time of your last order in local storage to limit spam. This is not a cookie and it stays on your device. It is hosted on GitHub Pages and loads fonts from Google Fonts, so GitHub and Google receive your IP address and browser details when you open it, as they do for any website they serve. See their own privacy policies for details.</p>
 
     <h2>Why we use your data</h2>
     <ul>
@@ -90,13 +111,16 @@ footer p{margin:0}
 </main>
 <footer>
   <div class="wrap">
-    <div>
-      <p>&copy; <span id="year">2026</span> Terrax SMP. All rights reserved.</p>
-      <p>Terrax SMP is not affiliated with Mojang or Microsoft.</p>
+    <div class="foot-brand">
+      <img src="logo-small.png" width="46" height="46" alt="">
+      <div>
+        <p>&copy; <span id="year">2026</span> Terrax SMP. All rights reserved.</p>
+        <p>Terrax SMP is not affiliated with Mojang or Microsoft.</p>
+      </div>
     </div>
     <nav aria-label="Legal">
-      <a href="privacy.html">Privacy Policy</a>
-      <a href="terms.html">Terms of Service</a>
+      <a href="privacy">Privacy Policy</a>
+      <a href="terms">Terms of Service</a>
     </nav>
   </div>
 </footer>
