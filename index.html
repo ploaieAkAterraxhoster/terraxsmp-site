@@ -106,6 +106,7 @@ h2{font-size:clamp(2rem,4.5vw,2.6rem);margin-bottom:14px}
 .perks li{display:flex;justify-content:space-between;gap:14px;padding:7px 0;border-bottom:2px solid var(--line)}
 .perks li span:first-child{color:var(--muted)}
 .perks li span:last-child{text-align:right;font-weight:500}
+.perks.rew li span{color:var(--text);text-align:left;font-weight:400}
 .perks li.cmd{display:block;border-bottom:0;padding:10px 0 0;font-family:"Pixelify Sans",monospace;font-size:1.05rem}
 .perks li.cmd code{background:rgba(0,0,0,.22);padding:3px 10px;border:2px solid var(--line);color:var(--text)}
 .note{margin:26px 0 0;color:var(--muted);font-size:.92rem;max-width:70ch}
@@ -204,7 +205,7 @@ footer nav a:hover{color:var(--text);text-decoration:underline}
 <section class="crates" id="crates">
   <div class="wrap">
     <h2>Crate keys</h2>
-    <p class="lede">Each key opens one crate. In game, left click a crate to open it, or right click to see what is inside before you buy.</p>
+    <p class="lede">Keys are sold in packs of 10 for the price shown, and each key opens one crate. Nothing is random: open the crate, see every reward and pick the one you want. Your key is only used when you pick.</p>
     <div class="grid" id="grid"></div>
     <p class="note">Prices are in euros. Place your order on the order page and a staff member will contact you on Discord to confirm and arrange payment. Your keys are added to your account on the server once payment is confirmed. Have your Minecraft username ready.</p>
   </div>
@@ -213,7 +214,7 @@ footer nav a:hover{color:var(--text);text-decoration:underline}
 <section class="ranks band" id="ranks">
   <div class="wrap">
     <h2>Ranks</h2>
-    <p class="lede">Every rank unlocks its own PvP kit. The higher the rank, the better the gear and the shorter the cooldown. Member is free and every player starts with it. Claim your kit in game with <code>/kit</code> or <code>/kitmenu</code>. Every rank can be bought once for good or as a monthly rank that lasts 30 days.</p>
+    <p class="lede">The higher the rank, the more homes, daily reward, auction and order slots you get and the faster you teleport home. VIP and above also unlock a PvP kit with better gear and a shorter cooldown. Member is free and every player starts with it. See your perks with <code>/rank</code>, collect your reward with <code>/daily</code> and claim your kit with <code>/kit</code> or <code>/kitmenu</code>. Every rank can be bought once for good or as a monthly rank that lasts 30 days.</p>
     <div class="grid" id="rank-grid"></div>
     <p class="note">Prices are in euros. Place your order on the order page and a staff member will contact you on Discord to confirm and arrange payment. Monthly ranks last 30 days from delivery and are not renewed automatically, so order again to keep yours. Have your Minecraft username ready.</p>
   </div>
@@ -243,22 +244,22 @@ const SERVER_IP = "play.terraxsmp.online";         // your server address
 const BUY_LINK  = "order";  // order form page
 
 const CRATES = [
-  { name: "Novice Crate",           price: 1.50,  color: "#d9dedb" },
-  { name: "Overworld Crate",        price: 3.00,  color: "#6b8e23" },
-  { name: "Netherbound Crate",      price: 5.00,  color: "#c0392b" },
-  { name: "Endgame Crate",          price: 8.00,  color: "#9b59d0" },
-  { name: "Mythic Crate",           price: 12.00, color: "#f08a24" },
-  { name: "Terrax Sovereign Crate", price: 20.00, color: "#22b8cf" }
+  { name: "Common Crate", price: 1.50, color: "#d9dedb", rewards: ["$5,000 to $15,000 money note", "Diamond armor set (Protection III)", "16 golden apples", "32 cooked beef", "Rare Crate key"] },
+  { name: "Rare Crate", price: 3.00, color: "#6b8e23", rewards: ["$25,000 to $50,000 money note", "Diamond sword (Sharpness V, Unbreaking III)", "Pig or cow spawner", "16 ender pearls", "Spawner Crate key"] },
+  { name: "Spawner Crate", price: 5.00, color: "#c0392b", rewards: ["$100,000 money note", "Elytra", "Netherite sword (Sharpness VI, Fire Aspect II)", "2 iron golem spawners", "8 netherite ingots"] },
+  { name: "Prime Crate", price: 8.00, color: "#9b59d0", rewards: ["$500,000 money note", "Netherite armor set (Protection V, Unbreaking IV)", "Diamond Shulker (full of diamond blocks)", "Apex Crate key"] },
+  { name: "Apex Crate", price: 12.00, color: "#f08a24", rewards: ["$1,500,000 money note", "God Sword (Sharpness VII, Looting IV, Unbreaking V)", "4 creeper spawners", "Netherite pickaxe (Efficiency VII, Fortune IV, Mending)", "Core Crate key"] },
+  { name: "Core Crate", price: 20.00, color: "#22b8cf", rewards: ["$5,000,000 money note", "God Armor, netherite (Protection V, Unbreaking IV, Mending)", "2 elytra", "Sovereign Shulker (totems, enchanted golden apples, netherite)", "3 Apex Crate keys"] }
 ];
 
-/* ---- Ranks: EDIT THE PRICES, they are placeholders ---- */
+/* ---- Ranks: perks come from DonutCore.jar, EDIT THE PRICES (they are placeholders) ---- */
 const RANKS = [
-  { name: "VIP",     key: "vip",      price: 5.00,  monthly: 2.00,  color: "#55ff55", cooldown: "24 min", armor: "Diamond, Mending",             sword: "Diamond, Sharpness V",  anchors: 2, glow: 1 },
-  { name: "Premium", key: "premium",  price: 10.00, monthly: 4.00,  color: "#e6b800", cooldown: "21 min", armor: "Diamond, gold trim",           sword: "Diamond, Sharpness V",  anchors: 3, glow: 1 },
-  { name: "VIP+",    key: "vipplus",  price: 15.00, monthly: 6.00,  color: "#33d6e6", cooldown: "17 min", armor: "Netherite (diamond chest)",    sword: "Netherite, Sharpness V", anchors: 3, glow: 2 },
-  { name: "Titan",   key: "titan",    price: 25.00, monthly: 10.00, color: "#ff55ff", cooldown: "10 min", armor: "Full Netherite, redstone trim", sword: "Netherite, Fire Aspect II", anchors: 4, glow: 2 },
-  { name: "Mythic",  key: "mythic",   price: 40.00, monthly: 16.00, color: "#ffaa00", cooldown: "5 min",  armor: "Full Netherite, amethyst trim", sword: "Netherite, Fire Aspect II", anchors: 5, glow: 2,
-    extra: "Swift Sneak III, Soul Speed III" }
+  { name: "Plus", key: "plus", price: 2.50, monthly: 1.00, color: "#5555ff", homes: 5, daily: 1000, shards: 2, listings: 12, tax: 5, orders: 6, delay: 3 },
+  { name: "VIP", key: "vip", price: 5.00, monthly: 2.00, color: "#55ff55", homes: 7, daily: 2500, shards: 5, listings: 15, tax: 4, orders: 8, delay: 2, cmds: "/craft", cooldown: "24 min", armor: "Diamond, Mending", sword: "Diamond, Sharpness V" },
+  { name: "Premium", key: "premium", price: 10.00, monthly: 4.00, color: "#e6b800", homes: 10, daily: 5000, shards: 10, listings: 20, tax: 3, orders: 10, delay: 2, cmds: "/craft, /enderchest", cooldown: "21 min", armor: "Diamond, gold trim", sword: "Diamond, Sharpness V" },
+  { name: "VIP+", key: "vipplus", price: 15.00, monthly: 6.00, color: "#33d6e6", homes: 15, daily: 7500, shards: 15, listings: 25, tax: 3, orders: 12, delay: 1, cmds: "/craft, /enderchest", cooldown: "17 min", armor: "Netherite (diamond chest)", sword: "Netherite, Sharpness V" },
+  { name: "Titan", key: "titan", price: 25.00, monthly: 10.00, color: "#ff55ff", homes: 30, daily: 20000, shards: 40, listings: 40, tax: 2, orders: 20, delay: 0, cmds: "/craft, /enderchest, /feed", cooldown: "10 min", armor: "Full Netherite, redstone trim", sword: "Netherite, Fire Aspect II" },
+  { name: "Mythic", key: "mythic", price: 40.00, monthly: 16.00, color: "#ffaa00", homes: 45, daily: 35000, shards: 60, listings: 60, tax: 1, orders: 30, delay: 0, cmds: "/craft, /enderchest, /feed", cooldown: "5 min", armor: "Full Netherite, amethyst trim", sword: "Netherite, Fire Aspect II" }
 ];
 
 document.getElementById("ip").textContent = SERVER_IP;
@@ -280,13 +281,16 @@ CRATES.forEach(c => {
   el.innerHTML =
     '<div class="top">' + cubeSVG() + '<h3></h3></div>' +
     '<div class="body">' +
-      '<div class="price">€' + c.price.toFixed(2) + ' <small>per key</small></div>' +
-      '<a class="btn">Buy a key</a>' +
+      '<div class="price">€' + c.price.toFixed(2) + ' <small>for 10 keys</small></div>' +
+      '<ul class="perks rew"></ul>' +
+      '<a class="btn">Buy 10 keys</a>' +
     '</div>';
   el.querySelector("h3").textContent = c.name;
+  const rl = el.querySelector(".rew");
+  c.rewards.forEach(t => { const li = document.createElement("li"); const sp = document.createElement("span"); sp.textContent = t; li.appendChild(sp); rl.appendChild(li); });
   const a = el.querySelector("a");
-  a.href = buy(c.name + " Key");
-  a.setAttribute("aria-label", "Buy a " + c.name + " key");
+  a.href = buy(c.name + " Key Pack (10 keys)");
+  a.setAttribute("aria-label", "Buy 10 " + c.name + " keys");
   grid.appendChild(el);
 });
 
@@ -305,9 +309,12 @@ RANKS.forEach(r => {
     '</div>';
   el.querySelector("h3").textContent = r.name;
   const list = el.querySelector(".perks");
-  const rows = [["Kit cooldown", r.cooldown], ["Armor", r.armor], ["Sword", r.sword],
-    ["Respawn anchors", r.anchors], ["Glowstone stacks", r.glow]];
-  if (r.extra) rows.push(["Extras", r.extra]);
+  const rows = [["Homes", r.homes], ["Daily reward", "$" + r.daily.toLocaleString("en-US") + " + " + r.shards + " shards"],
+    ["Auction listings", r.listings + " (" + r.tax + "% tax)"], ["Order slots", r.orders],
+    ["Home teleport delay", r.delay ? r.delay + " s" : "None"]];
+  if (r.cmds) rows.push(["Commands", r.cmds]);
+  rows.push(["PvP kit", r.cooldown ? "Yes, " + r.cooldown + " cooldown" : "Member kit"]);
+  if (r.armor) rows.push(["Kit armor", r.armor], ["Kit sword", r.sword]);
   rows.forEach(p => {
     const li = document.createElement("li");
     li.innerHTML = "<span></span><span></span>";
@@ -315,12 +322,14 @@ RANKS.forEach(r => {
     li.children[1].textContent = p[1];
     list.appendChild(li);
   });
-  const cmd = document.createElement("li");
-  cmd.className = "cmd";
-  const code = document.createElement("code");
-  code.textContent = "/kit " + r.key;
-  cmd.appendChild(code);
-  list.appendChild(cmd);
+  if (r.cooldown) {
+    const cmd = document.createElement("li");
+    cmd.className = "cmd";
+    const code = document.createElement("code");
+    code.textContent = "/kit " + r.key;
+    cmd.appendChild(code);
+    list.appendChild(cmd);
+  }
   const a = el.querySelector("a.once");
   a.href = buy(r.name + " Rank");
   a.setAttribute("aria-label", "Buy the " + r.name + " rank one-time");

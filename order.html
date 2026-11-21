@@ -105,6 +105,7 @@ textarea{min-height:90px;resize:vertical}
     <p class="hint">Staff will message you or invite you to a ticket on our Discord. <a id="dlink" href="#" target="_blank" rel="noopener">Join the Discord</a> first so we can reach you.</p>
 
     <h2>Crate keys</h2>
+    <p class="hint">Each pack gives you 10 keys of that crate for the price shown. Choose how many packs you want.</p>
     <div class="items" id="crates"></div>
 
     <h2>Ranks</h2>
@@ -138,12 +139,14 @@ const WEBHOOK_URL = "https://canary.discord.com/api/webhooks/1570414317373755405
 const DISCORD_INVITE = "https://discord.gg/yK6DUpNHT4";
 const PAYMENT_METHODS = ["PayPal", "Revolut", "Bank transfer"]; // change to what you accept
 const ITEMS = [ // keep in sync with index.html
-  { name: "Novice Crate Key", price: 1.50, g: "crates", color: "#d9dedb" },
-  { name: "Overworld Crate Key", price: 3.00, g: "crates", color: "#6b8e23" },
-  { name: "Netherbound Crate Key", price: 5.00, g: "crates", color: "#c0392b" },
-  { name: "Endgame Crate Key", price: 8.00, g: "crates", color: "#9b59d0" },
-  { name: "Mythic Crate Key", price: 12.00, g: "crates", color: "#f08a24" },
-  { name: "Terrax Sovereign Crate Key", price: 20.00, g: "crates", color: "#22b8cf" },
+  { name: "Common Crate Key Pack (10 keys)", price: 1.50, g: "crates", color: "#d9dedb" },
+  { name: "Rare Crate Key Pack (10 keys)", price: 3.00, g: "crates", color: "#6b8e23" },
+  { name: "Spawner Crate Key Pack (10 keys)", price: 5.00, g: "crates", color: "#c0392b" },
+  { name: "Prime Crate Key Pack (10 keys)", price: 8.00, g: "crates", color: "#9b59d0" },
+  { name: "Apex Crate Key Pack (10 keys)", price: 12.00, g: "crates", color: "#f08a24" },
+  { name: "Core Crate Key Pack (10 keys)", price: 20.00, g: "crates", color: "#22b8cf" },
+  { name: "Plus Rank", price: 2.50, max: 1, g: "ranks", color: "#5555ff" },
+  { name: "Plus Rank (monthly)", price: 1.00, max: 1, g: "ranks", color: "#5555ff", monthly: true },
   { name: "VIP Rank", price: 5.00, max: 1, g: "ranks", color: "#55ff55" },
   { name: "VIP Rank (monthly)", price: 2.00, max: 1, g: "ranks", color: "#55ff55", monthly: true },
   { name: "Premium Rank", price: 10.00, max: 1, g: "ranks", color: "#e6b800" },
@@ -166,27 +169,29 @@ const CUBE = '<svg class="cube" viewBox="0 0 64 64" aria-hidden="true">' +
   '<polygon class="l" points="4,18 32,32 32,62 4,48"/>' +
   '<polygon class="r" points="60,18 32,32 32,62 60,48"/></svg>';
 
+const maxOf = it => it.max || (it.step ? 100 : 20);
 const qtyEls = [], rowEls = [];
 ITEMS.forEach((it, i) => {
-  const max = it.max || 20;
+  const step = it.step || 1, max = maxOf(it);
   const row = document.createElement("div");
   row.className = "item";
   row.style.setProperty("--c", it.color);
   row.innerHTML = CUBE + '<div class="info"><b></b><small></small></div>' +
     '<div class="step"><button type="button" class="minus"></button><input type="number"><button type="button" class="plus"></button></div>';
   row.querySelector("b").textContent = it.name;
-  row.querySelector("small").textContent = it.monthly ? eur(it.price) + " per month" : (it.g === "ranks" ? eur(it.price) + " one-time" : eur(it.price));
+  row.querySelector("small").textContent = it.g === "crates" ? eur(it.price) + " for 10 keys" : it.monthly ? eur(it.price) + " per month" : (it.g === "ranks" ? eur(it.price) + " one-time" : eur(it.price));
   const q = row.querySelector("input");
-  q.min = 0; q.max = max; q.value = 0;
+  q.min = 0; q.max = max; q.step = step; q.value = 0;
   q.setAttribute("aria-label", "Quantity of " + it.name);
   const minus = row.querySelector(".minus"), plus = row.querySelector(".plus");
   minus.textContent = "\u2212"; plus.textContent = "+";
-  minus.setAttribute("aria-label", "Remove one " + it.name);
-  plus.setAttribute("aria-label", "Add one " + it.name);
+  minus.setAttribute("aria-label", "Remove " + step + " " + it.name);
+  plus.setAttribute("aria-label", "Add " + step + " " + it.name);
   const set = n => { q.value = Math.max(0, Math.min(max, n)); enforce(i); update(); };
-  minus.addEventListener("click", () => set((parseInt(q.value, 10) || 0) - 1));
-  plus.addEventListener("click", () => set((parseInt(q.value, 10) || 0) + 1));
+  minus.addEventListener("click", () => set((parseInt(q.value, 10) || 0) - step));
+  plus.addEventListener("click", () => set((parseInt(q.value, 10) || 0) + step));
   q.addEventListener("input", () => { enforce(i); update(); });
+  q.addEventListener("change", () => { set(Math.round((parseInt(q.value, 10) || 0) / step) * step); });
   qtyEls.push(q); rowEls.push(row);
   $(it.g).appendChild(row);
 });
@@ -199,7 +204,7 @@ function enforce(i) {
   if (other > -1) qtyEls[other].value = 0;
 }
 function chosen() {
-  return ITEMS.map((it, i) => ({ it, n: Math.max(0, Math.min(it.max || 20, parseInt(qtyEls[i].value, 10) || 0)) })).filter(x => x.n > 0);
+  return ITEMS.map((it, i) => ({ it, n: Math.max(0, Math.min(maxOf(it), parseInt(qtyEls[i].value, 10) || 0)) })).filter(x => x.n > 0);
 }
 function update() {
   $("total").textContent = eur(chosen().reduce((t, x) => t + x.it.price * x.n, 0));
@@ -210,7 +215,7 @@ function update() {
 try {
   const add = new URLSearchParams(location.search).get("add");
   const idx = ITEMS.findIndex(x => x.name === add);
-  if (idx > -1) { qtyEls[idx].value = 1; enforce(idx); }
+  if (idx > -1) { qtyEls[idx].value = ITEMS[idx].step || 1; enforce(idx); }
 } catch (_) {}
 update();
 
