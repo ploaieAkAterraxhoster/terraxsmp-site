@@ -97,6 +97,10 @@ h2{font-size:clamp(2rem,4.5vw,2.6rem);margin-bottom:14px}
 .cube .l{fill:var(--c)}
 .cube .r{fill:color-mix(in srgb,var(--c) 62%,#000)}
 .price{font-family:"Pixelify Sans",monospace;font-size:2.1rem;font-weight:700;line-height:1}
+.price.alt{font-size:1.45rem;margin-top:-4px}
+.btns{display:grid;gap:10px;margin-top:auto}
+.crate .btns .btn{margin-top:0}
+.btn.alt{background:var(--panel2);color:var(--text);border:2px solid var(--line);padding:9px 20px;box-shadow:0 4px 0 var(--line)}
 .price small{font-family:Figtree,sans-serif;font-size:.85rem;color:var(--muted);font-weight:400}
 .perks{list-style:none;margin:0;padding:0;font-size:.95rem}
 .perks li{display:flex;justify-content:space-between;gap:14px;padding:7px 0;border-bottom:2px solid var(--line)}
@@ -209,9 +213,9 @@ footer nav a:hover{color:var(--text);text-decoration:underline}
 <section class="ranks band" id="ranks">
   <div class="wrap">
     <h2>Ranks</h2>
-    <p class="lede">Every rank unlocks its own PvP kit. The higher the rank, the better the gear and the shorter the cooldown. Member is free and every player starts with it. Claim your kit in game with <code>/kit</code> or <code>/kitmenu</code>.</p>
+    <p class="lede">Every rank unlocks its own PvP kit. The higher the rank, the better the gear and the shorter the cooldown. Member is free and every player starts with it. Claim your kit in game with <code>/kit</code> or <code>/kitmenu</code>. Every rank can be bought once for good or as a monthly rank that lasts 30 days.</p>
     <div class="grid" id="rank-grid"></div>
-    <p class="note">Prices are in euros. Place your order on the order page and a staff member will contact you on Discord to confirm and arrange payment. Have your Minecraft username ready.</p>
+    <p class="note">Prices are in euros. Place your order on the order page and a staff member will contact you on Discord to confirm and arrange payment. Monthly ranks last 30 days from delivery and are not renewed automatically, so order again to keep yours. Have your Minecraft username ready.</p>
   </div>
 </section>
 
@@ -249,11 +253,11 @@ const CRATES = [
 
 /* ---- Ranks: EDIT THE PRICES, they are placeholders ---- */
 const RANKS = [
-  { name: "VIP",     key: "vip",      price: 5.00,  color: "#55ff55", cooldown: "24 min", armor: "Diamond, Mending",             sword: "Diamond, Sharpness V",  anchors: 2, glow: 1 },
-  { name: "Premium", key: "premium",  price: 10.00, color: "#e6b800", cooldown: "21 min", armor: "Diamond, gold trim",           sword: "Diamond, Sharpness V",  anchors: 3, glow: 1 },
-  { name: "VIP+",    key: "vipplus",  price: 15.00, color: "#33d6e6", cooldown: "17 min", armor: "Netherite (diamond chest)",    sword: "Netherite, Sharpness V", anchors: 3, glow: 2 },
-  { name: "Titan",   key: "titan",    price: 25.00, color: "#ff55ff", cooldown: "10 min", armor: "Full Netherite, redstone trim", sword: "Netherite, Fire Aspect II", anchors: 4, glow: 2 },
-  { name: "Mythic",  key: "mythic",   price: 40.00, color: "#ffaa00", cooldown: "5 min",  armor: "Full Netherite, amethyst trim", sword: "Netherite, Fire Aspect II", anchors: 5, glow: 2,
+  { name: "VIP",     key: "vip",      price: 5.00,  monthly: 2.00,  color: "#55ff55", cooldown: "24 min", armor: "Diamond, Mending",             sword: "Diamond, Sharpness V",  anchors: 2, glow: 1 },
+  { name: "Premium", key: "premium",  price: 10.00, monthly: 4.00,  color: "#e6b800", cooldown: "21 min", armor: "Diamond, gold trim",           sword: "Diamond, Sharpness V",  anchors: 3, glow: 1 },
+  { name: "VIP+",    key: "vipplus",  price: 15.00, monthly: 6.00,  color: "#33d6e6", cooldown: "17 min", armor: "Netherite (diamond chest)",    sword: "Netherite, Sharpness V", anchors: 3, glow: 2 },
+  { name: "Titan",   key: "titan",    price: 25.00, monthly: 10.00, color: "#ff55ff", cooldown: "10 min", armor: "Full Netherite, redstone trim", sword: "Netherite, Fire Aspect II", anchors: 4, glow: 2 },
+  { name: "Mythic",  key: "mythic",   price: 40.00, monthly: 16.00, color: "#ffaa00", cooldown: "5 min",  armor: "Full Netherite, amethyst trim", sword: "Netherite, Fire Aspect II", anchors: 5, glow: 2,
     extra: "Swift Sneak III, Soul Speed III" }
 ];
 
@@ -295,8 +299,9 @@ RANKS.forEach(r => {
     '<div class="top">' + cubeSVG() + '<h3></h3></div>' +
     '<div class="body">' +
       '<div class="price">€' + r.price.toFixed(2) + ' <small>one-time</small></div>' +
+      '<div class="price alt">€' + r.monthly.toFixed(2) + ' <small>per month</small></div>' +
       '<ul class="perks"></ul>' +
-      '<a class="btn">Buy this rank</a>' +
+      '<div class="btns"><a class="btn once">Buy one-time</a><a class="btn alt monthly">Buy monthly</a></div>' +
     '</div>';
   el.querySelector("h3").textContent = r.name;
   const list = el.querySelector(".perks");
@@ -316,9 +321,12 @@ RANKS.forEach(r => {
   code.textContent = "/kit " + r.key;
   cmd.appendChild(code);
   list.appendChild(cmd);
-  const a = el.querySelector("a");
+  const a = el.querySelector("a.once");
   a.href = buy(r.name + " Rank");
-  a.setAttribute("aria-label", "Buy the " + r.name + " rank");
+  a.setAttribute("aria-label", "Buy the " + r.name + " rank one-time");
+  const m = el.querySelector("a.monthly");
+  m.href = buy(r.name + " Rank (monthly)");
+  m.setAttribute("aria-label", "Buy the " + r.name + " rank monthly");
   rankGrid.appendChild(el);
 });
 

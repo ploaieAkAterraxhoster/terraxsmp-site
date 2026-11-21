@@ -108,7 +108,7 @@ textarea{min-height:90px;resize:vertical}
     <div class="items" id="crates"></div>
 
     <h2>Ranks</h2>
-    <p class="hint">One of each rank per order. Member is free, so it isn't listed.</p>
+    <p class="hint">Choose one-time or monthly for each rank. Monthly ranks last 30 days from delivery and are not renewed automatically: order again to keep yours. Member is free, so it isn't listed.</p>
     <div class="items" id="ranks"></div>
 
     <h2>Payment and notes</h2>
@@ -122,7 +122,7 @@ textarea{min-height:90px;resize:vertical}
 
     <div class="summary">
       <div class="total">
-        <div class="sum"><span>Total</span><span id="total">€0.00</span></div>
+        <div class="sum"><span>Total today</span><span id="total">€0.00</span></div>
         <button type="submit" id="send">Send order</button>
       </div>
       <div id="msg" role="status" aria-live="polite"></div>
@@ -145,10 +145,15 @@ const ITEMS = [ // keep in sync with index.html
   { name: "Mythic Crate Key", price: 12.00, g: "crates", color: "#f08a24" },
   { name: "Terrax Sovereign Crate Key", price: 20.00, g: "crates", color: "#22b8cf" },
   { name: "VIP Rank", price: 5.00, max: 1, g: "ranks", color: "#55ff55" },
+  { name: "VIP Rank (monthly)", price: 2.00, max: 1, g: "ranks", color: "#55ff55", monthly: true },
   { name: "Premium Rank", price: 10.00, max: 1, g: "ranks", color: "#e6b800" },
+  { name: "Premium Rank (monthly)", price: 4.00, max: 1, g: "ranks", color: "#e6b800", monthly: true },
   { name: "VIP+ Rank", price: 15.00, max: 1, g: "ranks", color: "#33d6e6" },
+  { name: "VIP+ Rank (monthly)", price: 6.00, max: 1, g: "ranks", color: "#33d6e6", monthly: true },
   { name: "Titan Rank", price: 25.00, max: 1, g: "ranks", color: "#ff55ff" },
-  { name: "Mythic Rank", price: 40.00, max: 1, g: "ranks", color: "#ffaa00" }
+  { name: "Titan Rank (monthly)", price: 10.00, max: 1, g: "ranks", color: "#ff55ff", monthly: true },
+  { name: "Mythic Rank", price: 40.00, max: 1, g: "ranks", color: "#ffaa00" },
+  { name: "Mythic Rank (monthly)", price: 16.00, max: 1, g: "ranks", color: "#ffaa00", monthly: true }
 ];
 
 const $ = id => document.getElementById(id);
@@ -170,7 +175,7 @@ ITEMS.forEach((it, i) => {
   row.innerHTML = CUBE + '<div class="info"><b></b><small></small></div>' +
     '<div class="step"><button type="button" class="minus"></button><input type="number"><button type="button" class="plus"></button></div>';
   row.querySelector("b").textContent = it.name;
-  row.querySelector("small").textContent = eur(it.price);
+  row.querySelector("small").textContent = it.monthly ? eur(it.price) + " per month" : (it.g === "ranks" ? eur(it.price) + " one-time" : eur(it.price));
   const q = row.querySelector("input");
   q.min = 0; q.max = max; q.value = 0;
   q.setAttribute("aria-label", "Quantity of " + it.name);
@@ -178,14 +183,21 @@ ITEMS.forEach((it, i) => {
   minus.textContent = "\u2212"; plus.textContent = "+";
   minus.setAttribute("aria-label", "Remove one " + it.name);
   plus.setAttribute("aria-label", "Add one " + it.name);
-  const set = n => { q.value = Math.max(0, Math.min(max, n)); update(); };
+  const set = n => { q.value = Math.max(0, Math.min(max, n)); enforce(i); update(); };
   minus.addEventListener("click", () => set((parseInt(q.value, 10) || 0) - 1));
   plus.addEventListener("click", () => set((parseInt(q.value, 10) || 0) + 1));
-  q.addEventListener("input", update);
+  q.addEventListener("input", () => { enforce(i); update(); });
   qtyEls.push(q); rowEls.push(row);
   $(it.g).appendChild(row);
 });
 
+/* a rank is either one-time or monthly, never both */
+function enforce(i) {
+  const it = ITEMS[i];
+  if (it.g !== "ranks" || !(parseInt(qtyEls[i].value, 10) > 0)) return;
+  const other = ITEMS.findIndex(x => x.name === (it.monthly ? it.name.replace(" (monthly)", "") : it.name + " (monthly)"));
+  if (other > -1) qtyEls[other].value = 0;
+}
 function chosen() {
   return ITEMS.map((it, i) => ({ it, n: Math.max(0, Math.min(it.max || 20, parseInt(qtyEls[i].value, 10) || 0)) })).filter(x => x.n > 0);
 }
@@ -198,7 +210,7 @@ function update() {
 try {
   const add = new URLSearchParams(location.search).get("add");
   const idx = ITEMS.findIndex(x => x.name === add);
-  if (idx > -1) qtyEls[idx].value = 1;
+  if (idx > -1) { qtyEls[idx].value = 1; enforce(idx); }
 } catch (_) {}
 update();
 
